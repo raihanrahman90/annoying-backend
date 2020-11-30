@@ -1,0 +1,19 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/tambakin/titip.tambak.in"
+PassengerBaseURI "/"
+PassengerNodejs "/home/tambakin/nodevenv/titip.tambak.in/10/bin/node"
+PassengerAppType node
+PassengerStartupFile bin/www
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/yoiakuak/express.yoiakuakultur.com"
+PassengerBaseURI "/"
+PassengerNodejs "/home/yoiakuak/nodevenv/express.yoiakuakultur.com/10/bin/node"
+PassengerAppType node
+PassengerStartupFile bin/www
+PassengerAppLogFile "/home/yoiakuak/passengar.log"
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END

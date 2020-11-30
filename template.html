@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <mate charest="utf-8" />
+        <title>Yoi Seafood</title>
+        <style>
+            table{
+                width: 100%;
+                height: fit-content;
+            }
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            img{
+                width: 30%;
+                height: auto;
+            }
+            thead tr{
+                background-color: #f2f2f2;
+            }
+        </style>
+    </head> 
+    <body>
+        <img src="https://yoiakuakultur.com/assets/logo.png"></img>
+        <h1>Daftar Penjualan</h1>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        Nama Produk
+                    </td>
+                    <td>
+                        Stock
+                    </td>
+                    <td>
+                        Harga
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each penjualan}}
+                    <tr>
+                        <td>{{this.nama_penjualan}}</td>
+                        <td>{{this.stock_penjualan}}</td>
+                        <td>{{this.harga_penjualan}}</td>
+                    </tr>
+                {{/each}}
+                </ul>
+            </tbody>
+        </table>
+    </body>
+</html>
