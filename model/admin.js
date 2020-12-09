@@ -102,8 +102,8 @@ exports.getById = (req,res)=>{
 }
 exports.deleteById = (req, res)=>{
     connection.query(
-        'delete from admin where id_user=?',
-        [req.params.id_user],
+        'delete from admin where idAdmin=?',
+        [req.params.idAdmin],
         (error,result)=>{
             if(error){
                 res.statusCode = 500
@@ -129,12 +129,11 @@ exports.login = (req, res, next)=>{
                 res.json({success: false, message:'Username tidak ditemukan salah'});
             }else{
                 if(await bcrypt.compare(req.body.password, rows[0].password)){
-                    console.log(rows[0])
                     var token = authenticate.getToken({
                         id_user : rows[0].id_user,
                         username : rows[0].username,
                         nama : rows[0].nama,
-                        hak_akses:rows[0].hak_akses
+                        hakAkses:rows[0].hakAkses
                     });
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');

@@ -32,7 +32,7 @@ exports.verifyAdmin = (req, res, next)=>{
             return res.sendStatus(403)
         }else{
             req.user = user
-            if(req.user.hak_akses=="Super Admin" || req.user.hak_akses=='Admin'){
+            if(req.user.hakAkses=="Super Admin" || req.user.hakAkses=='Admin'){
                 next()
             }else{
                 res.statusCode= 403
