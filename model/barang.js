@@ -99,6 +99,7 @@ exports.deleteById = (req, res)=>{
             if(error){
                 res.statusCode = 500
                 res.setHeader('Content-Type', 'application/json');
+                console.log(error.message)
                 res.json({success:false, message:'Terjadi kesalahan'})
             }else{
                 res.statusCode = 200
@@ -146,6 +147,23 @@ exports.getGambarByIdBarang = (req,res)=>{
     connection.query(
         'select * from barang_gambar where idBarang=?',
         [req.params.idBarang],
+        (error,result)=>{
+            if(error){
+                res.statusCode = 500
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:false, message:'Terjadi kesalahan'})
+            }else{
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, result:result})
+            }
+        }
+    )
+}
+exports.deleteGambarById = (req,res)=>{
+    connection.query(
+        'delete from barang_gambar where idBarangGambar=?',
+        [req.params.idBarangGambar],
         (error,result)=>{
             if(error){
                 res.statusCode = 500

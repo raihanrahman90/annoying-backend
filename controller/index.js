@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Admin = require('../model/admin')
+var User = require('../model/users')
 var Barang = require('../model/barang')
 var Upload = require('../model/upload_file')
 var authenticate = require('../authenticate');
@@ -30,6 +31,21 @@ router.route('/admin/:idAdmin')
 .delete(multer().none(), authenticate.verifyAdmin, Admin.deleteById)
 
 
+router.route('/user/')
+.get(multer().none(), authenticate.verifyAdmin, User.getAll)
+.post(multer().none(),  User.create)
+
+router.route('/user/login')
+.post(multer().none(),    
+    apiLimiter, 
+    User.login)
+
+router.route('/user/:idUser')
+.post(multer().none(), authenticate.verifyAdmin, User.updateById)
+.get(multer().none(), authenticate.verifyUser, User.getById)
+.delete(multer().none(), authenticate.verifyAdmin, User.deleteById)
+
+
 router.route('/barang/')
 .get(multer().none(), Barang.getAll)
 .post(multer().none(),  authenticate.verifyAdmin, Barang.create)
@@ -39,6 +55,11 @@ router.route('/barang/:idBarang')
 .get(multer().none(), Barang.getById)
 .delete(multer().none(), authenticate.verifyAdmin, Barang.deleteById)
 
+router.route('/barang/:idBarang/gambar')
+.post(authenticate.verifyAdmin, Upload.uploadGambarBarang,Barang.insertGambar)
+.get(multer().none(), Barang.getGambarByIdBarang)
 
+router.route('/barang/:idBarang/gambar/:idBarangGambar')
+.delete(authenticate.verifyAdmin, Barang.deleteGambarById)
 
 module.exports = router

@@ -5,8 +5,8 @@ const authenticate = require('../authenticate')
 exports.create = async (req, res)=>{
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
     connection.query(
-        `INSERT INTO admin (nama, username, password, hakAkses) value (?,?,?,?)`,
-        [req.body.nama, req.body.username, hashedPassword, req.body.hakAkses],
+        `INSERT INTO user (nama, username, password) value (?,?,?)`,
+        [req.body.nama, req.body.username, hashedPassword],
         async (error,result)=>{
             if(error){
                 res.statusCode = 500;
@@ -23,7 +23,7 @@ exports.create = async (req, res)=>{
 
 exports.cekUsername = (req,res,next)=>{
     connection.query(
-        `select * from admin where username=?`,
+        `select * from user where username=?`,
         [req.body.username],
         (error, result)=>{
             if(err){
@@ -42,7 +42,7 @@ exports.cekUsername = (req,res,next)=>{
 }
 exports.getAll = (req, res)=>{
     connection.query(
-        `SELECT * from admin`,
+        `SELECT * from user`,
         (error,result)=>{
             if(error){
                 res.statusCode = 500
@@ -62,7 +62,7 @@ exports.updateById = async (req,res)=>{
         req.body.password = await bcrypt.hash(req.body.password, 10)
     }
     connection.query(
-        'update admin set ? where id_user =?',
+        'update user set ? where id_user =?',
         [req.body, req.params.id_user],
         (error,result)=>{
             if(error){
@@ -85,8 +85,8 @@ exports.updateById = async (req,res)=>{
 }
 exports.getById = (req,res)=>{
     connection.query(
-        'select * from admin where idAdmin =?',
-        [req.params.idAdmin],
+        'select * from user where idUser =?',
+        [req.params.idUser],
         (error,result)=>{
             if(error){
                 res.statusCode = 500;
@@ -102,8 +102,8 @@ exports.getById = (req,res)=>{
 }
 exports.deleteById = (req, res)=>{
     connection.query(
-        'delete from admin where idAdmin=?',
-        [req.params.idAdmin],
+        'delete from user where idUser=?',
+        [req.params.idUser],
         (error,result)=>{
             if(error){
                 res.statusCode = 500
@@ -119,7 +119,7 @@ exports.deleteById = (req, res)=>{
 }
 exports.login = (req, res, next)=>{
     connection.query(
-        `SELECT admin.* from admin 
+        `SELECT user.* from user 
         where username=?`,
         [req.body.username],
         async (error, rows)=>{ 
@@ -130,10 +130,10 @@ exports.login = (req, res, next)=>{
             }else{
                 if(await bcrypt.compare(req.body.password, rows[0].password)){
                     var token = authenticate.getToken({
-                        idAdmin : rows[0].idAdmin,
+                        idUser : rows[0].idUser,
                         username : rows[0].username,
                         nama : rows[0].nama,
-                        hakAkses:rows[0].hakAkses
+                        hakAkses:'User'
                     });
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
@@ -149,14 +149,16 @@ exports.login = (req, res, next)=>{
 }
 exports.getNewToken = (req,res, next)=>{
         connection.query(
-            "SELECT admin.* where idAdmin=?",
-            [req.user.idAdmin || req.body.idAdmin],
+            "SELECT tb_akun.*, tb_akun_data.kelengkapan from tb_akun left join tb_akun_data on tb_akun.id_akun = tb_akun_data.id_akun where id_akun=?",
+            [req.user.id_akun || req.body.id_akun],
             (req, res)=>{
                 var token = authenticate.getToken({
-                    id_user : rows[0].id_user,
-                    username : rows[0].username,
-                    nama : rows[0].nama,
-                    hakAkses:rows[0].hakAkses
+                    id_akun : res[0].id_akun,
+                    username : res[0].username,
+                    nama : res[0].nama,
+                    status : res[0].status,
+                    kelengkapan : res[0].kelengkapan,
+                    daftar_tunggu : res[0].daftar_tunggu
                 });
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');

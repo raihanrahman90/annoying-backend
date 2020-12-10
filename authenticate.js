@@ -23,6 +23,25 @@ exports.verifyUser = (req,res,next)=>{
         }
     })
 };
+exports.verifyMyData = (req,res,next)=>{
+    var authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(' ')[1]
+    if (token == null) return res.sendStatus(401)
+    jwt.verify(token, secretKey, (err,user)=>{
+        if(err) {
+            return res.sendStatus(403)
+        }else{
+            req.user = user
+            if(req.user.idUser==req.params.idUser || req.user.idUser==req.body.idUser){
+                next()
+            }else{
+                res.statusCode= 403
+                res.setHeader('Content-Type', 'application/json');
+                res.send({message:"Action can only be done by Admin"})
+            }
+        }
+    })
+}
 exports.verifyAdmin = (req, res, next)=>{
     var authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1]
