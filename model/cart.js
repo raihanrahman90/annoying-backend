@@ -64,7 +64,7 @@ exports.getById = (req,res)=>{
         `select * from cart 
             left join barang_stock on barang_stock.idBarang = cart.idCart
             where cart.idCart =?
-            order by idBarangStock, jumlah`,
+            order by idCheckout, jumlah`,
         [req.params.idCart],
         (error,result)=>{
             if(error){
@@ -73,17 +73,16 @@ exports.getById = (req,res)=>{
                 res.json({message: error.message});
             }else{
                 hasil = {
-                    namaBarang:result[0].namaBarang,
-                    harga:result[0].harga,
-                    gambar:req.body.gambar,
-                    warna:{}
+                    idUser:result[0].idUser,
+                    idBarangStock:result[0].idBarangStock,
+                    idCheckout:{}
                 }
                 for(let stock in result){
-                    let barang = result[stock]
-                    if(!hasil.warna[barang.warna]){
-                        hasil.warna[barang.warna]={}
+                    let Cart = result[stock]
+                    if(!hasil.idCheckout[Cart.idCheckout]){
+                        hasil.idCheckout[Cart.idCheckout]={}
                     }
-                    hasil.warna[barang.warna][barang.ukuran]=barang.stock
+                    hasil.idCheckout[Cart.idCheckout][Cart.jumlah]=Cart.idBarangStock
                 }
                 res.statusCode = 200
                 res.setHeader('Content-Type', 'application/json');
