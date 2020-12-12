@@ -62,8 +62,8 @@ exports.updateById = async (req,res)=>{
         req.body.password = await bcrypt.hash(req.body.password, 10)
     }
     connection.query(
-        'update admin set ? where id_user =?',
-        [req.body, req.params.id_user],
+        'update admin set ? where idAdmin =?',
+        [req.body, req.params.idAdmin],
         (error,result)=>{
             if(error){
                 res.statusCode = 500;

@@ -7,6 +7,7 @@ var Upload = require('../model/upload_file')
 var authenticate = require('../authenticate');
 var multer = require('multer');
 var bodyParser = require('body-parser')
+var Cart = require('../model/cart')
 const rateLimit = require("express-rate-limit");
 const apiLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 15 minutes
@@ -61,5 +62,9 @@ router.route('/barang/:idBarang/gambar')
 
 router.route('/barang/:idBarang/gambar/:idBarangGambar')
 .delete(authenticate.verifyAdmin, Barang.deleteGambarById)
+
+router.route('/cart')
+.post(multer().none(), authenticate.verifyUser, Cart.create)
+
 
 module.exports = router
