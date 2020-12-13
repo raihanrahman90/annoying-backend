@@ -1,6 +1,5 @@
 node_modules/
 dist/
-connection.js
 # Compiled Java class files
 *.class
 
