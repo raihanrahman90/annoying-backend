@@ -128,6 +128,23 @@ exports.getByKategori = (req,res)=>{
         }
     )
 }
+exports.getBySubKategori = (req,res)=>{
+    connection.query(
+        'SELECT * FROM barang where kategori=? and subkategori=?',
+        [req.params.kategori, req.params.subkategori],
+        (error,result)=>{
+            if(error){
+                res.statusCode = 500
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:false, message:'Terjadi kesalahan'})
+            }else{
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, result:result[0]})
+            }
+        }
+    )
+}
 exports.insertGambar = (req,res)=>{
     connection.query(
         `insert into barang_gambar value(0,?,?)`,

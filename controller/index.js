@@ -51,6 +51,11 @@ router.route('/barang/')
 .get(multer().none(), Barang.getAll)
 .post(multer().none(),  authenticate.verifyAdmin, Barang.create)
 
+router.route('/barangKategori/:kategori')
+.get(multer().none(), Barang.getByKategori)
+
+router.route('/barangKategori/:kategori/:subkategori')
+.get(multer().none(), Barang.getBySubKategori)
 router.route('/barang/:idBarang')
 .post(multer().none(), authenticate.verifyAdmin, Barang.updateById)
 .get(multer().none(), Barang.getById)
