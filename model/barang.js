@@ -20,7 +20,9 @@ exports.create = async (req, res)=>{
 
 exports.getAll = (req, res)=>{
     connection.query(
-        `SELECT * from barang`,
+        `SELECT * from barang 
+        left join (select * from barang_gambar group by idBarang) as gambar on gambar.idBarang = barang.idBarang
+        order by barang.idBarang desc`,
         (error,result)=>{
             if(error){
                 res.statusCode = 500
