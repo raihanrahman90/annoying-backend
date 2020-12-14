@@ -123,7 +123,7 @@ exports.getByKategori = (req,res)=>{
             }else{
                 res.statusCode = 200
                 res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, result:result[0]})
+                res.json({success:true, result:result})
             }
         }
     )
@@ -140,7 +140,24 @@ exports.getBySubKategori = (req,res)=>{
             }else{
                 res.statusCode = 200
                 res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, result:result[0]})
+                res.json({success:true, result:result})
+            }
+        }
+    )
+}
+exports.getSubKategori = (req,res)=>{
+    connection.query(
+        'SELECT distinct(subkategori) FROM barang where kategori=?',
+        [req.params.kategori],
+        (error,result)=>{
+            if(error){
+                res.statusCode = 500
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:false, message:'Terjadi kesalahan'})
+            }else{
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, result:result})
             }
         }
     )
