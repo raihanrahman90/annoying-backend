@@ -113,7 +113,9 @@ exports.deleteById = (req, res)=>{
 }
 exports.getByKategori = (req,res)=>{
     connection.query(
-        'SELECT * FROM barang where kategori=?',
+        `SELECT * FROM barang 
+            left join (select * from barang_gambar group by idBarang) as gambar on gambar.idBarang = barang.idBarang
+            where kategori=?`,
         [req.params.kategori],
         (error,result)=>{
             if(error){
@@ -130,7 +132,9 @@ exports.getByKategori = (req,res)=>{
 }
 exports.getBySubKategori = (req,res)=>{
     connection.query(
-        'SELECT * FROM barang where kategori=? and subkategori=?',
+        `SELECT * FROM barang 
+            left join (select * from barang_gambar group by idBarang) as gambar on gambar.idBarang = barang.idBarang
+            where kategori=? and subkategori=?`,
         [req.params.kategori, req.params.subkategori],
         (error,result)=>{
             if(error){
