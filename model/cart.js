@@ -37,8 +37,8 @@ exports.getAll = (req, res)=>{
 
 exports.updateById = async (req,res)=>{
     connection.query(
-        'update cart set ? where id_user =?',
-        [req.body, req.params.id_user],
+        'update cart set ? where idCart =?',
+        [req.body, req.params.idCart],
         (error,result)=>{
             if(error){
                 res.statusCode = 500;
@@ -59,35 +59,68 @@ exports.updateById = async (req,res)=>{
     )
 }
 
-exports.getById = (req,res)=>{
+exports.getByIdUser = (req,res)=>{
     connection.query(
         `select * from cart 
-            left join barang_stock on barang_stock.idBarang = cart.idCart
-            where cart.idCart =?
-            order by idCheckout, jumlah`,
-        [req.params.idCart],
+            left join barang_stock on barang_stock.idBarangStock = cart.idBarangStock
+            left join barang on barang.idBarang = barang_stock.idBarang
+            where cart.idUser =?` ,
+        [req.user.idUser],
         (error,result)=>{
             if(error){
                 res.statusCode = 500;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({message: error.message});
             }else{
-                hasil = {
-                    idUser:result[0].idUser,
-                    idBarangStock:result[0].idBarangStock,
-                    idCheckout:{}
-                }
-                for(let stock in result){
-                    let Cart = result[stock]
-                    if(!hasil.idCheckout[Cart.idCheckout]){
-                        hasil.idCheckout[Cart.idCheckout]={}
-                    }
-                    hasil.idCheckout[Cart.idCheckout][Cart.jumlah]=Cart.idBarangStock
-                }
                 res.statusCode = 200
                 res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, result:hasil})
+                res.json({success:true, result})
             }
         }
     )
 }
+
+exports.getByIdUserCheckoutNull = (req,res)=>{
+    connection.query(
+        `select * from cart 
+            left join barang_stock on barang_stock.idBarangStock = cart.idBarangStock
+            left join barang on barang.idBarang = barang_stock.idBarang
+            where cart.idUser =? and cart.idCheckout is null` ,
+        [req.user.idUser],
+        (error,result)=>{
+            if(error){
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({message: error.message});
+            }else{
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, result})
+            }
+        }
+    )
+}
+
+exports.deleteById = (req, res)=>{
+    connection.query(
+        'delete from cart where idCart =?',
+        [req.params.idCart],
+        (error,result)=>{
+            if(error){
+                res.statusCode = 500
+                res.setHeader('Content-Type', 'application/json');
+                console.log(error.message)
+                res.json({success:false, message:'Terjadi kesalahan'})
+            }else{
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true})
+            }
+        }
+    )
+}
+
+
+
+
+

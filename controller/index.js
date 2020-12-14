@@ -66,5 +66,15 @@ router.route('/barang/:idBarang/gambar/:idBarangGambar')
 router.route('/cart')
 .post(multer().none(), authenticate.verifyUser, Cart.create)
 
+router.route('/cart/myCart')
+.get(multer().none(), authenticate.verifyUser, Cart.getByIdUser)
+router.route('/cart/mycart/CheckoutNull')
+.get(multer().none(), authenticate.verifyUser, Cart.getByIdUser)
+router.route('/cart/:idCart')
+.post(multer().none(), authenticate.verifyUser, Cart.updateById)
+.delete(authenticate.verifyUser, Cart.deleteById)
+
+
+
 
 module.exports = router
