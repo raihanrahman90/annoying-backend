@@ -20,7 +20,7 @@ exports.create = async (req, res)=>{
 
 exports.getAll = (req, res)=>{
     connection.query(
-        `SELECT * from barang 
+        `SELECT barang.*, gambar.gambar from barang 
         left join (select * from barang_gambar group by idBarang) as gambar on gambar.idBarang = barang.idBarang
         order by barang.idBarang desc`,
         (error,result)=>{
@@ -113,7 +113,7 @@ exports.deleteById = (req, res)=>{
 }
 exports.getByKategori = (req,res)=>{
     connection.query(
-        `SELECT * FROM barang 
+        `SELECT barang.*, gambar.gambar FROM barang 
             left join (select * from barang_gambar group by idBarang) as gambar on gambar.idBarang = barang.idBarang
             where kategori=?`,
         [req.params.kategori],
@@ -132,9 +132,9 @@ exports.getByKategori = (req,res)=>{
 }
 exports.getBySubKategori = (req,res)=>{
     connection.query(
-        `SELECT * FROM barang 
-            left join (select * from barang_gambar group by idBarang) as gambar on gambar.idBarang = barang.idBarang
-            where kategori=? and subkategori=?`,
+        `SELECT barang.*, gambar.gambar FROM barang 
+                left join (select * from barang_gambar group by idBarang) as gambar on gambar.idBarang = barang.idBarang
+                where kategori=? and subkategori=?`,
         [req.params.kategori, req.params.subkategori],
         (error,result)=>{
             if(error){
