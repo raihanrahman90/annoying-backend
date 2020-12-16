@@ -4,6 +4,7 @@ var Admin = require('../model/admin')
 var User = require('../model/users')
 var Barang = require('../model/barang')
 var Upload = require('../model/upload_file')
+var Stocking = require('../model/stocking')
 var authenticate = require('../authenticate');
 var multer = require('multer');
 var bodyParser = require('body-parser')
@@ -80,7 +81,9 @@ router.route('/cart/mycart/CheckoutNull')
 router.route('/cart/:idCart')
 .post(multer().none(), authenticate.verifyUser, Cart.updateById)
 .delete(authenticate.verifyUser, Cart.deleteById)
-
+router.route('/stocking')
+.post(multer().none(), authenticate.verifyAdmin, Stocking.create)
+.get(authenticate.verifyAdmin, Stocking.getAll)
 
 
 

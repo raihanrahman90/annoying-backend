@@ -1,13 +1,14 @@
 const connection = require('../connection');
 exports.create = async (req, res)=>{
     connection.query(
-        `INSERT INTO barang (namaBarang, kategori, subkategori, harga) value (?,?,?,?)`,
-        [req.body.namaBarang, req.body.kategori, req.body.subkategori, req.body.harga],
+        `INSERT INTO barang (namaBarang, kategori, subkategori, harga,deskripsi) value (?,?,?,?,?)`,
+        [req.body.namaBarang, req.body.kategori, req.body.subkategori, req.body.harga, req.body.deskripsi],
         (error,result)=>{
             console.log(req.body)
             if(error){
                 res.statusCode = 500;
                 res.setHeader('Content-Type', 'application/json');
+                console.log(error.message)
                 res.send({success:false, message:error.message});
             }else{
                 res.statusCode = 200;
@@ -39,10 +40,11 @@ exports.getAll = (req, res)=>{
 
 exports.updateById = async (req,res)=>{
     connection.query(
-        'update barang set ? where id_user =?',
-        [req.body, req.params.id_user],
+        'update barang set ? where idBarang =?',
+        [req.body, req.params.idBarang],
         (error,result)=>{
             if(error){
+                console.log(error.message)
                 res.statusCode = 500;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({success:false, message: "Terjadi kesalahan"});
@@ -77,6 +79,9 @@ exports.getById = (req,res)=>{
                     namaBarang:result[0].namaBarang,
                     harga:result[0].harga,
                     gambar:req.body.gambar,
+                    kategori:result[0].kategori,
+                    subkategori:result[0].subkategori,
+                    deskripsi:result[0].deskripsi,
                     warna:{}
                 }
                 for(let stock in result){
