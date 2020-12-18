@@ -78,6 +78,28 @@ exports.getByIdUser = (req,res)=>{
         }
     )
 }
+exports.getByIdUserCheckoutNull = (req,res)=>{
+    connection.query(
+        `select cart.*, barang_stock.warna, barang_stock.ukuran, barang_stock.stock, barang.namaBarang, gambar_table.gambar from cart 
+            left join barang_stock on barang_stock.idBarangStock = cart.idBarangStock
+            left join barang on barang.idBarang = barang_stock.idBarang
+           left join (select gambar, idBarang from barang_gambar group by barang_gambar.idBarang) as gambar_table on gambar_table.idBarang = barang.idBarang
+            where cart.idUser =1
+            and idCheckout is null` ,
+        [req.user.idUser],
+        (error,result)=>{
+            if(error){
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({message: error.message});
+            }else{
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, result})
+            }
+        }
+    )
+}
 
 exports.getByIdUserCheckoutNull = (req,res)=>{
     connection.query(
