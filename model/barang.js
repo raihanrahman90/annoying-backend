@@ -75,25 +75,32 @@ exports.getById = (req,res)=>{
                 res.setHeader('Content-Type', 'application/json');
                 res.json({message: error.message});
             }else{
-                hasil = {
-                    namaBarang:result[0].namaBarang,
-                    harga:result[0].harga,
-                    gambar:req.body.gambar,
-                    kategori:result[0].kategori,
-                    subkategori:result[0].subkategori,
-                    deskripsi:result[0].deskripsi,
-                    warna:{}
-                }
-                for(let stock in result){
-                    let barang = result[stock]
-                    if(!hasil.warna[barang.warna]){
-                        hasil.warna[barang.warna]={}
+                if(!result[0]){
+                    res.statusCode = 404
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success:false, message: error.message});
+                }else{
+                    hasil = {
+                        namaBarang:result[0].namaBarang,
+                        harga:result[0].harga,
+                        gambar:req.body.gambar,
+                        kategori:result[0].kategori,
+                        subkategori:result[0].subkategori,
+                        deskripsi:result[0].deskripsi,
+                        warna:{}
                     }
-                    hasil.warna[barang.warna][barang.ukuran]={stock:barang.stock,idBarangStock:barang.idBarangStock}
+                    for(let stock in result){
+                        let barang = result[stock]
+                        if(!hasil.warna[barang.warna]){
+                            hasil.warna[barang.warna]={}
+                        }
+                        hasil.warna[barang.warna][barang.ukuran]={stock:barang.stock,idBarangStock:barang.idBarangStock}
+                    }
+                    res.statusCode = 200
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success:true, result:hasil})
                 }
-                res.statusCode = 200
-                res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, result:hasil})
+                
             }
         }
     )

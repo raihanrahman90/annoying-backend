@@ -73,14 +73,14 @@ exports.getByIdUser = (req,res)=>{
             }else{
                 res.statusCode = 200
                 res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, result})
+                res.json({success:true, result:result})
             }
         }
     )
 }
 exports.getByIdUserCheckoutNull = (req,res)=>{
     connection.query(
-        `select cart.*, barang_stock.warna, barang_stock.ukuran, barang_stock.stock, barang.namaBarang, gambar_table.gambar from cart 
+        `select cart.*, barang_stock.warna, barang_stock.ukuran, barang_stock.stock, barang.namaBarang, gambar_table.gambar, harga from cart 
             left join barang_stock on barang_stock.idBarangStock = cart.idBarangStock
             left join barang on barang.idBarang = barang_stock.idBarang
            left join (select gambar, idBarang from barang_gambar group by barang_gambar.idBarang) as gambar_table on gambar_table.idBarang = barang.idBarang
@@ -93,10 +93,10 @@ exports.getByIdUserCheckoutNull = (req,res)=>{
                 res.setHeader('Content-Type', 'application/json');
                 res.json({message: error.message});
             }else{
-                console.log("disini")
+                let jumlah = result.map(barang=>barang.harga*barang.jumlah).reduce((a,b)=>a+b, 0)
                 res.statusCode = 200
                 res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, result})
+                res.json({success:true, result:result, jumlah:jumlah})
             }
         }
     )
