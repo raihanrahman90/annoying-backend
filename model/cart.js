@@ -4,7 +4,6 @@ exports.create = async (req, res)=>{
         `INSERT INTO cart value (0,?,?,null,?)`,
         [req.user.idUser, req.body.idBarangStock, req.body.jumlah],
         (error,result)=>{
-            console.log(req.body)
             if(error){
                 res.statusCode = 500;
                 res.setHeader('Content-Type', 'application/json');

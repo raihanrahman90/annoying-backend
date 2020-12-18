@@ -89,7 +89,7 @@ exports.getById = (req,res)=>{
                     if(!hasil.warna[barang.warna]){
                         hasil.warna[barang.warna]={}
                     }
-                    hasil.warna[barang.warna][barang.ukuran]=barang.stock
+                    hasil.warna[barang.warna][barang.ukuran]={stock:barang.stock,idBarangStock:barang.idBarangStock}
                 }
                 res.statusCode = 200
                 res.setHeader('Content-Type', 'application/json');
