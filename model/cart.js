@@ -84,7 +84,7 @@ exports.getByIdUserCheckoutNull = (req,res)=>{
             left join barang_stock on barang_stock.idBarangStock = cart.idBarangStock
             left join barang on barang.idBarang = barang_stock.idBarang
            left join (select gambar, idBarang from barang_gambar group by barang_gambar.idBarang) as gambar_table on gambar_table.idBarang = barang.idBarang
-            where cart.idUser =1
+            where cart.idUser =?
             and idCheckout is null` ,
         [req.user.idUser],
         (error,result)=>{
@@ -93,6 +93,7 @@ exports.getByIdUserCheckoutNull = (req,res)=>{
                 res.setHeader('Content-Type', 'application/json');
                 res.json({message: error.message});
             }else{
+                console.log("disini")
                 res.statusCode = 200
                 res.setHeader('Content-Type', 'application/json');
                 res.json({success:true, result})
@@ -101,26 +102,6 @@ exports.getByIdUserCheckoutNull = (req,res)=>{
     )
 }
 
-exports.getByIdUserCheckoutNull = (req,res)=>{
-    connection.query(
-        `select * from cart 
-            left join barang_stock on barang_stock.idBarangStock = cart.idBarangStock
-            left join barang on barang.idBarang = barang_stock.idBarang
-            where cart.idUser =? and cart.idCheckout is null` ,
-        [req.user.idUser],
-        (error,result)=>{
-            if(error){
-                res.statusCode = 500;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({message: error.message});
-            }else{
-                res.statusCode = 200
-                res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, result})
-            }
-        }
-    )
-}
 
 exports.deleteById = (req, res)=>{
     connection.query(
