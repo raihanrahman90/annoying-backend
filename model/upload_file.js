@@ -39,7 +39,8 @@ exports.uploadGambarBuktiPembayaran = (req, res, next)=>{
     var upload = multer({ storage: storage, fileFilter: this.imageFileFilter}).fields([{name:'gambar'}]);
     upload(req, res, function (err) {
         if(req.files.gambar){
-            req.body.gambar = req.files.gambar[0].filename
+            req.body.bukti = req.files.gambar[0].filename
+            req.body.status = 'Menunggu Konfirmasi'
         }
         next()
     })

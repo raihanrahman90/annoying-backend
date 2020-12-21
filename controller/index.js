@@ -9,6 +9,9 @@ var authenticate = require('../authenticate');
 var multer = require('multer');
 var bodyParser = require('body-parser')
 var Cart = require('../model/cart')
+var Discount = require('../model/discount')
+var Ulasan = require('../model/ulasan')
+var Checkout = require('../model/checkout')
 const rateLimit = require("express-rate-limit");
 const apiLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 15 minutes
@@ -42,6 +45,9 @@ router.route('/user/login')
     apiLimiter, 
     User.login)
 
+router.route('/user/myData')
+.get(multer().none(), authenticate.verifyUser, User.getMyData)
+.post(multer().none(), authenticate.verifyUser, User.updateMyData, User.getNewToken)
 router.route('/user/:idUser')
 .post(multer().none(), authenticate.verifyAdmin, User.updateById)
 .get(multer().none(), authenticate.verifyUser, User.getById)
@@ -86,6 +92,47 @@ router.route('/stocking')
 .post(multer().none(), authenticate.verifyAdmin, Stocking.create)
 .get(authenticate.verifyAdmin, Stocking.getAll)
 
+router.route('/discount')
+.post(multer().none(), authenticate.verifyAdmin, Discount.create)
+.get(authenticate.verifyAdmin, Discount.getAll)
 
+router.route('/discount/:idDiscount')
+.post(multer().none(), authenticate.verifyAdmin, Discount.updateById)
+.get(Discount.getById)
+.delete(Discount.deleteById)
+
+router.route('/kodeDiscount/:kodeDiscount')
+.get(Discount.checkKodeDiscount)
+
+router.route('/ulasan')
+.post(multer().none(), authenticate.verifyUser,Ulasan.create )
+.get(Ulasan.getAll)
+
+router.route('/ulasan/:idUlasan')
+.post(multer().none(), authenticate.verifyUser, Ulasan.updateById)
+.get(multer().none(), Ulasan.getById)
+.delete(multer().none(), authenticate.verifyUser, Ulasan.deleteById)
+
+router.route('/checkout')
+.post(multer().none(), authenticate.verifyUser, Checkout.create)
+.get(multer().none(), authenticate.verifyAdmin, Checkout.getAll)
+
+router.route('/checkout/getMyCheckout')
+.get(authenticate.verifyUser, Checkout.getByToken)
+
+
+router.route('/checkout/:idCheckout')
+.post(authenticate.verifyUser, Checkout.updateById)
+.get(authenticate.verifyUser, Checkout.getById)
+.delete(authenticate.verifyUser, Checkout.deleteById)
+
+router.route('/checkout/:idCheckout/bukti')
+.post(authenticate.verifyUser, Upload.uploadGambarBuktiPembayaran, Checkout.updateById)
+
+router.route('/pembayaran')
+.get(authenticate.verifyAdmin, Checkout.getPembayaran)
+
+router.route('/pembayaran/:idCheckout')
+.post(multer().none(), authenticate.verifyAdmin, Checkout.konfirmasi)
 
 module.exports = router

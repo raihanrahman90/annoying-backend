@@ -87,6 +87,7 @@ exports.getById = (req,res)=>{
                         kategori:result[0].kategori,
                         subkategori:result[0].subkategori,
                         deskripsi:result[0].deskripsi,
+                        ulasan:req.ulasan,
                         warna:{}
                     }
                     for(let stock in result){

@@ -61,6 +61,7 @@ exports.getAll = (req,res)=>{
                 res.setHeader('Content-Type', 'application/json');
                 res.send({success:false, message:error.message});
             }else{
+                var conver = result.map(row=>{return {...row, created_at:new Date(row.created_at+0).toLocaleDateString()}})
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({success:true, result:result});

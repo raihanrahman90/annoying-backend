@@ -122,7 +122,3 @@ exports.deleteById = (req, res)=>{
     )
 }
 
-
-
-
-

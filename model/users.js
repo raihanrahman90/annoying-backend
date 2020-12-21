@@ -62,8 +62,8 @@ exports.updateById = async (req,res)=>{
         req.body.password = await bcrypt.hash(req.body.password, 10)
     }
     connection.query(
-        'update user set ? where id_user =?',
-        [req.body, req.params.id_user],
+        'update user set ? where idUser =?',
+        [req.body, req.params.idUser],
         (error,result)=>{
             if(error){
                 res.statusCode = 500;
@@ -74,6 +74,31 @@ exports.updateById = async (req,res)=>{
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json({success: true,  message: 'successfully update!'});
+                }else{
+                    res.statusCode = 404;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({message: "Akun tidak ditemukan"});
+                }
+            }
+        }
+    )
+}
+exports.updateMyData = async (req,res,next)=>{
+    if(req.body.password){
+        req.body.password = await bcrypt.hash(req.body.password, 10)
+    }
+    connection.query(
+        'update user set ? where idUser =?',
+        [req.body, req.user.idUser],
+        (error,result)=>{
+            if(error){
+                console.log(error.message)
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:false, message: "Terjadi kesalahan"});
+            }else{
+                if(result.affectedRows==1){
+                    next()
                 }else{
                     res.statusCode = 404;
                     res.setHeader('Content-Type', 'application/json');
@@ -149,24 +174,47 @@ exports.login = (req, res, next)=>{
 }
 exports.getNewToken = (req,res, next)=>{
         connection.query(
-            "SELECT tb_akun.*, tb_akun_data.kelengkapan from tb_akun left join tb_akun_data on tb_akun.id_akun = tb_akun_data.id_akun where id_akun=?",
-            [req.user.id_akun || req.body.id_akun],
-            (req, res)=>{
-                var token = authenticate.getToken({
-                    id_akun : res[0].id_akun,
-                    username : res[0].username,
-                    nama : res[0].nama,
-                    status : res[0].status,
-                    kelengkapan : res[0].kelengkapan,
-                    daftar_tunggu : res[0].daftar_tunggu
-                });
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({success: true, token: token, status: 'You are successfully logged in!'});
+            "SELECT * from user where idUser=?",
+            [req.user.idUser],
+            (error, rows)=>{
+                if(error){
+                    console.log(error.message)
+                    res.statusCode = 500
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success:false, message:'Terjadi kesalahan'})
+                }else{
+                    var token = authenticate.getToken({
+                        idUser : rows[0].idUser,
+                        username : rows[0].username,
+                        nama : rows[0].nama,
+                        hakAkses:'User'
+                    });
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: true, token: token, status: 'You are successfully logged in!'});
+                }
+                
             }
         )
 }
+exports.getMyData = (req,res)=>{
+    connection.query(
+        'select * from user where idUser =?',
+        [req.user.idUser],
+        (error,result)=>{
+            if(error){
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({message: error.message});
+            }else{
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, result:result[0]})
+            }
+        }
+    )
 
+}
 exports.kirimEmail = (req,res,next)=>{
     mailer.customEmail(req.params.email, req.body.subject, req.body.isi)
     res.statusCode = 200;
